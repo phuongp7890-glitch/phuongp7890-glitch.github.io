@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>下龙湾数字博物馆 | 世界自然遗产</title>
+<meta name="description" content="下龙湾—吉婆群岛 · 数字博物馆：五亿年的石灰岩被海水切成近两千座岛屿，从翡翠色海面升起。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d0b09'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23c7a469' stroke-width='1.6'/%3E%3Ccircle cx='16' cy='16' r='3.4' fill='%23c7a469'/%3E%3C/svg%3E">
+<style>
+/* ============ 变量 · 基础 ============ */
+:root{
+  --bg:        #0b0a08;
+  --bg-2:      #100e0b;
+  --panel:     #16120e;
+  --panel-2:   #1c1712;
+  --ink:       #ece4d5;
+  --ink-soft:  #c5bbaa;
+  --muted:     #8a7f70;
+  --gold:      #c7a469;
+  --gold-hi:   #e8d0a0;
+  --ochre:     #2f7f74;
+  --line:      rgba(199,164,105,.16);
+  --line-str:  rgba(199,164,105,.34);
+  --paper:     #ece2cf;
+  --serif: "Source Han Serif SC","Noto Serif SC","Songti SC","STSong","SimSun",Georgia,"Times New Roman",serif;
+  --sans: "PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Hiragino Sans GB",system-ui,-apple-system,sans-serif;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  position:relative;
+}
+/* 岩面肌理 + 颗粒 */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:url("images/halong-cruise.jpg") center/cover no-repeat;
+  opacity:.035;
+  filter:grayscale(1) blur(14px);
+  mix-blend-mode:screen;
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.wrap{position:relative;z-index:1;max-width:1220px;margin:0 auto;padding:0 32px}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(47,127,116,.55);color:#fff}
+
+/* 细金线 */
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--line-str) 12%,var(--line-str) 88%,transparent)}
+
+/* ============ 顶部栏 ============ */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:18px 0 16px;font-size:11px;letter-spacing:.28em;color:var(--muted);
+  text-transform:uppercase;
+}
+.topbar .tb-left,.topbar .tb-right{display:flex;align-items:center;gap:14px}
+.topbar .dot{width:3px;height:3px;background:var(--gold);border-radius:50%;opacity:.8}
+.topbar .mark{color:var(--gold);letter-spacing:.3em}
+.topbar .tb-right span:last-child{color:var(--ink-soft)}
+
+/* ============ 刊头 ============ */
+.masthead{
+  display:grid;grid-template-columns:1fr auto;gap:56px;align-items:end;
+  padding:44px 0 52px;position:relative;
+}
+.eyebrow{
+  display:flex;align-items:center;gap:12px;
+  font-size:11px;letter-spacing:.42em;color:var(--gold);margin-bottom:26px;
+}
+.eyebrow i{display:block;width:38px;height:1px;background:var(--gold);opacity:.6}
+h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(46px,7.4vw,92px);line-height:1.02;
+  letter-spacing:.04em;color:#f4ecdd;
+  text-shadow:0 2px 40px rgba(199,164,105,.12);
+}
+h1 .thin{
+  display:block;font-weight:400;font-size:.46em;letter-spacing:.28em;
+  color:var(--gold-hi);margin-top:14px;opacity:.92;
+}
+.deck{
+  margin-top:30px;max-width:33em;color:var(--ink-soft);
+  font-family:var(--serif);font-size:clamp(14px,1.4vw,17px);
+  line-height:2;letter-spacing:.04em;
+}
+.deck em{font-style:normal;color:var(--gold-hi)}
+
+/* 世界文化遗产 徽章 */
+.badge{
+  position:relative;min-width:236px;padding:26px 28px 24px;
+  border:1px solid var(--line-str);
+  background:
+    radial-gradient(120% 100% at 50% 0%,rgba(199,164,105,.13),transparent 70%),
+    linear-gradient(180deg,rgba(28,22,16,.9),rgba(16,13,10,.9));
+  display:flex;align-items:center;gap:18px;
+  box-shadow:0 26px 60px -30px rgba(0,0,0,.9), inset 0 1px 0 rgba(232,208,160,.12);
+}
+.badge::before,.badge::after{
+  content:"";position:absolute;width:9px;height:9px;border:1px solid var(--gold);
+}
+.badge::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.badge::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+.badge .seal{flex:0 0 auto;width:52px;height:52px;animation:seal 60s linear infinite}
+@keyframes seal{to{transform:rotate(360deg)}}
+.badge .bt{font-size:9px;letter-spacing:.34em;color:var(--muted);text-transform:uppercase}
+.badge .bm{
+  font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:.18em;
+  color:var(--gold-hi);line-height:1.5;margin:4px 0 6px;
+}
+.badge .bs{font-size:9px;letter-spacing:.22em;color:var(--gold);opacity:.72}
+
+/* ============ 第一展厅 · 主图 ============ */
+.stage-sec{padding:6px 0 30px}
+.sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:26px;flex-wrap:wrap}
+.sec-no{
+  font-family:var(--serif);font-size:12px;letter-spacing:.2em;color:var(--gold);
+  border:1px solid var(--line-str);padding:2px 8px;
+}
+.sec-head h2{
+  font-family:var(--serif);font-size:clamp(17px,1.8vw,21px);font-weight:700;
+  letter-spacing:.24em;color:var(--ink);
+}
+.sec-en{font-size:10px;letter-spacing:.34em;color:var(--muted);text-transform:uppercase}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--line-str),transparent);min-width:40px}
+
+/* ============ 展柜 ============ */
+.stage{position:relative;padding-top:38px}
+.stage::before{
+  content:"";position:absolute;left:50%;top:-30px;width:min(900px,96%);height:560px;
+  transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(46% 44% at 50% 0%,rgba(199,164,105,.13),transparent 72%);
+}
+.vitrine{position:relative}
+
+/* 射灯 */
+.lamp{position:absolute;left:50%;top:-38px;transform:translateX(-50%);width:200px;height:58px;z-index:9}
+.lamp-rod{
+  position:absolute;left:50%;top:0;width:2px;height:15px;transform:translateX(-50%);
+  background:linear-gradient(180deg,#6d5738,#2a2118);
+}
+.lamp-shade{
+  position:absolute;left:50%;top:13px;width:92px;height:34px;transform:translateX(-50%);
+  background:linear-gradient(180deg,#584732 0%,#2b2117 40%,#0f0b08 100%);
+  clip-path:polygon(22% 0,78% 0,100% 100%,0 100%);
+  box-shadow:0 5px 16px rgba(0,0,0,.85);
+}
+.lamp-shade::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:rgba(255,236,200,.28);
+}
+.lamp-shade::after{
+  content:"";position:absolute;left:5%;right:5%;bottom:-1px;height:8px;
+  background:linear-gradient(90deg,transparent,#fff0cd 50%,transparent);
+  filter:blur(1.6px);opacity:1;
+}
+.lamp-glow{
+  position:absolute;left:50%;top:30px;width:420px;height:300px;transform:translateX(-50%);
+  background:radial-gradient(42% 40% at 50% 8%,rgba(255,234,190,.55),rgba(255,216,152,.16) 44%,transparent 72%);
+  filter:blur(10px);mix-blend-mode:screen;pointer-events:none;
+}
+
+/* 光束：用圆锥渐变从灯口散开，边缘自然羽化 */
+.beam{
+  position:absolute;left:50%;top:0;width:100%;height:100%;
+  transform:translateX(-50%);pointer-events:none;
+  mix-blend-mode:screen;z-index:4;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.95) 46%,rgba(0,0,0,.55) 78%,transparent 96%);
+  mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.95) 46%,rgba(0,0,0,.55) 78%,transparent 96%);
+}
+.beam-soft{
+  background:conic-gradient(from 0deg at 50% 0%,
+    transparent 0deg,
+    rgba(255,226,175,0) 138deg,
+    rgba(255,232,188,.20) 156deg,
+    rgba(255,232,188,.20) 204deg,
+    rgba(255,226,175,0) 222deg,
+    transparent 360deg);
+  filter:blur(22px);
+}
+.beam-core{
+  background:conic-gradient(from 0deg at 50% 0%,
+    transparent 0deg,
+    rgba(255,242,208,0) 150deg,
+    rgba(255,246,220,.26) 168deg,
+    rgba(255,246,220,.26) 192deg,
+    rgba(255,242,208,0) 210deg,
+    transparent 360deg);
+  filter:blur(12px);
+}
+
+/* 展柜柜体 */
+.case{
+  position:relative;z-index:2;overflow:hidden;
+  padding:52px 58px 44px;
+  background:
+    radial-gradient(78% 58% at 50% 0%,rgba(255,226,176,.13),transparent 64%),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 1px,transparent 1px 7px),
+    linear-gradient(180deg,#1b1611 0%,#14100c 42%,#0a0807 100%);
+  border:1px solid rgba(199,164,105,.20);
+  border-bottom-color:rgba(199,164,105,.10);
+  box-shadow:
+    inset 0 44px 80px -46px rgba(0,0,0,.95),
+    inset 0 -34px 64px -34px rgba(0,0,0,.9),
+    0 30px 60px -44px #000;
+}
+
+/* 悬挂区：画框随作品比例伸缩，整体居中 */
+.stage-inner{
+  position:relative;z-index:3;
+  height:clamp(250px,46vh,486px);
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* 画框 */
+.artwork{
+  position:relative;z-index:3;padding:15px;
+  background:linear-gradient(155deg,#3a2c1e 0%,#1b140d 30%,#281d13 56%,#0d0a07 100%);
+  border:1px solid #000;
+  box-shadow:
+    0 44px 64px -30px rgba(0,0,0,.96),
+    0 12px 24px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,232,190,.16),
+    inset 0 0 0 1px rgba(0,0,0,.75);
+}
+.artwork::before{
+  content:"";position:absolute;inset:6px;pointer-events:none;
+  border:1px solid rgba(0,0,0,.55);
+  box-shadow:inset 0 1px 0 rgba(255,230,190,.10);
+}
+
+/* 台座 */
+.plinth{
+  position:relative;z-index:1;height:64px;margin:0 -14px;
+  background:linear-gradient(180deg,#3b2e1f 0%,#251b12 7%,#150f0b 19%,#0b0906 60%,#060505 100%);
+  border-top:1px solid rgba(232,208,160,.34);
+  box-shadow:
+    0 30px 44px -20px rgba(0,0,0,.92),
+    inset 0 1px 0 rgba(255,240,205,.16),
+    inset 0 -1px 0 rgba(0,0,0,.8);
+}
+.plinth::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:12px;
+  background:linear-gradient(180deg,rgba(255,234,195,.14),transparent);
+}
+.plinth::after{
+  content:"";position:absolute;left:3%;right:3%;bottom:-28px;height:40px;z-index:-1;
+  background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.8),transparent 72%);
+  filter:blur(9px);
+}
+.brass{
+  position:absolute;left:50%;top:20px;transform:translateX(-50%);
+  min-width:104px;padding:5px 14px;text-align:center;
+  font-family:var(--sans);font-size:8.5px;letter-spacing:.24em;color:#2a1f0f;
+  background:linear-gradient(180deg,#e0c088,#b08e46 52%,#8a6a33);
+  box-shadow:
+    inset 0 1px 0 rgba(255,245,220,.75),
+    inset 0 -1px 0 rgba(60,40,10,.6),
+    0 2px 7px rgba(0,0,0,.7);
+}
+
+/* 玻璃反光 */
+.glass{
+  position:absolute;inset:0;z-index:6;pointer-events:none;
+  background:
+    linear-gradient(104deg,transparent 20%,rgba(255,255,255,.10) 31%,rgba(255,255,255,.03) 39%,transparent 47%),
+    linear-gradient(74deg,transparent 60%,rgba(255,255,255,.055) 70%,transparent 78%),
+    radial-gradient(120% 54% at 50% 0%,rgba(255,255,255,.07),transparent 58%),
+    radial-gradient(90% 60% at 50% 108%,rgba(0,0,0,.34),transparent 62%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.055), inset 0 1px 0 rgba(255,255,255,.16);
+}
+.glass::before,.glass::after{
+  content:"";position:absolute;top:0;bottom:0;width:12%;pointer-events:none;
+}
+.glass::before{left:0;background:linear-gradient(90deg,rgba(255,255,255,.055),transparent)}
+.glass::after{right:0;background:linear-gradient(270deg,rgba(255,255,255,.055),transparent)}
+
+.mat{
+  position:relative;width:100%;height:clamp(220px,42vh,456px);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  border:1px solid rgba(199,164,105,.42);
+  background:
+    radial-gradient(70% 80% at 50% 42%,rgba(199,164,105,.10),transparent 72%),
+    #0a0908;
+  transition:background .55s var(--ease),width .5s var(--ease),height .5s var(--ease);
+}
+/* 模糊底衬：填满竖幅图片两侧的空带 */
+.mat-bd{
+  position:absolute;inset:-70px;z-index:0;pointer-events:none;
+  background-position:center;background-size:cover;
+  filter:blur(48px) brightness(.34) saturate(.9);
+  transform:scale(1.05);
+  transition:opacity .5s var(--ease);
+}
+.mat--light .mat-bd{opacity:0}
+.mat::after{
+  content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  box-shadow:inset 0 0 90px 20px rgba(0,0,0,.75);
+  transition:box-shadow .55s var(--ease);
+}
+.mat--light{
+  background:
+    radial-gradient(70% 80% at 50% 40%,#f5eeda,transparent 76%),
+    #e6dbc6;
+}
+.mat--light::after{box-shadow:inset 0 0 70px 10px rgba(92,66,38,.16)}
+.mat img{
+  position:relative;z-index:2;
+  max-width:100%;max-height:100%;object-fit:contain;
+  transition:opacity .34s var(--ease),transform 1.2s var(--ease),filter .34s var(--ease);
+}
+.mat img.is-fading{opacity:0;transform:scale(.985)}
+.mat--light img{mix-blend-mode:multiply}
+
+/* AI 色彩还原 */
+.mat img.is-restored,
+.lightbox img.is-restored{
+  filter:saturate(1.48) contrast(1.06) brightness(1.04) hue-rotate(-5deg);
+}
+
+/* 角标编号 */
+.stage-index{
+  position:absolute;right:20px;bottom:16px;z-index:5;
+  font-family:var(--serif);font-size:11px;letter-spacing:.24em;
+  color:rgba(236,228,213,.42);pointer-events:none;
+  text-shadow:0 1px 8px rgba(0,0,0,.85);
+}
+
+/* 左右切换 */
+.nav-btn{
+  position:absolute;top:calc(50% + 14px);transform:translateY(-50%);z-index:8;
+  width:44px;height:44px;display:grid;place-items:center;border-radius:50%;
+  border:1px solid rgba(199,164,105,.34);
+  background:rgba(10,9,8,.72);backdrop-filter:blur(8px);
+  color:var(--gold-hi);transition:.3s var(--ease);
+  box-shadow:0 10px 24px -14px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,235,200,.10);
+}
+.nav-btn:hover{background:rgba(199,164,105,.18);border-color:var(--gold);color:#fff6e2}
+.nav-btn:active{transform:translateY(-50%) scale(.94)}
+.nav-btn.prev{left:-56px}
+.nav-btn.next{right:-56px}
+.nav-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.4}
+
+/* 说明牌 */
+.plate{
+  display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:start;
+  margin-top:22px;padding-top:20px;border-top:1px solid var(--line);
+}
+.plate-no{
+  font-family:var(--serif);font-size:11px;letter-spacing:.26em;color:var(--gold);
+  padding-top:8px;white-space:nowrap;
+}
+.plate-main h3{
+  font-family:var(--serif);font-size:clamp(22px,2.6vw,31px);font-weight:700;
+  letter-spacing:.06em;color:#f5edde;line-height:1.3;
+}
+.plate-main .en{
+  font-size:10px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;
+  margin-top:7px;
+}
+.plate-main .desc{
+  margin-top:12px;color:var(--ink-soft);font-size:14px;line-height:1.9;max-width:44em;
+}
+.plate-meta{
+  text-align:right;font-size:12px;letter-spacing:.1em;color:var(--ink-soft);
+  padding-top:6px;line-height:1.9;
+}
+.plate-meta b{
+  display:block;color:var(--gold);font-weight:400;font-size:9.5px;
+  letter-spacing:.28em;margin-bottom:2px;
+}
+.plate-main h3,.plate-main .en,.plate-main .desc{transition:opacity .3s var(--ease),transform .3s var(--ease)}
+.is-swapping .plate-main h3,
+.is-swapping .plate-main .en,
+.is-swapping .plate-main .desc{opacity:0;transform:translateY(6px)}
+
+/* ============ 简介 ============ */
+.intro{padding:78px 0 84px;position:relative}
+.intro-grid{display:grid;grid-template-columns:1.55fr .85fr;gap:64px;margin-top:34px}
+.prose p{
+  color:var(--ink-soft);font-family:var(--serif);
+  font-size:clamp(15px,1.5vw,16.5px);line-height:2.15;letter-spacing:.03em;
+  text-align:justify;
+}
+.prose p + p{margin-top:20px}
+.prose p:first-of-type::first-letter{
+  float:left;font-size:3.5em;line-height:.86;padding:6px 14px 4px 0;
+  color:var(--gold-hi);font-family:var(--serif);
+}
+.facts{border-top:1px solid var(--line)}
+.facts dl{display:grid;grid-template-columns:auto 1fr;gap:0}
+.facts dt,.facts dd{padding:13px 0;border-bottom:1px solid var(--line);font-size:13px}
+.facts dt{color:var(--muted);letter-spacing:.2em;padding-right:22px;white-space:nowrap}
+.facts dd{color:var(--ink);letter-spacing:.04em;text-align:right;font-family:var(--serif)}
+.facts .note{
+  margin-top:18px;font-size:11px;line-height:1.9;color:#9c9082;letter-spacing:.06em;
+}
+
+/* ============ 藏品陈列 ============ */
+.collection{padding:0 0 90px}
+.coll-top{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:30px}
+.coll-hint{font-size:11px;letter-spacing:.22em;color:var(--muted);display:flex;align-items:center;gap:10px}
+.coll-hint .kbd{
+  border:1px solid var(--line-str);padding:1px 7px;font-size:10px;color:var(--gold);letter-spacing:.1em;
+}
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));
+  gap:16px 14px;
+}
+/* 藏品较少时固定列数，避免落单的最后一行 */
+.grid.is-small{grid-template-columns:repeat(4,1fr);gap:20px 16px}
+.card{
+  position:relative;display:block;text-align:left;width:100%;
+  border:1px solid rgba(199,164,105,.10);
+  background:linear-gradient(180deg,rgba(26,21,16,.7),rgba(14,12,9,.7));
+  padding:8px 8px 0;transition:.35s var(--ease);
+  overflow:hidden;
+}
+.card:hover{
+  border-color:rgba(199,164,105,.42);transform:translateY(-4px);
+  box-shadow:0 18px 34px -22px rgba(0,0,0,.95);
+}
+.card.is-active{border-color:var(--gold);background:linear-gradient(180deg,rgba(48,36,22,.55),rgba(18,14,10,.8))}
+.card.is-active::after{
+  content:"正在展出";position:absolute;top:0;left:0;
+  font-size:8px;letter-spacing:.18em;color:#140f0a;background:var(--gold);
+  padding:2px 7px;z-index:3;
+}
+.card-media{
+  position:relative;display:grid;place-items:center;aspect-ratio:4/3;overflow:hidden;
+  background:#0a0908;
+}
+.card-media img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .7s var(--ease),filter .4s var(--ease);
+  filter:saturate(.92) brightness(.94);
+}
+.card-media--light{background:#e9dfcb}
+.card-media--light img{object-fit:contain;padding:6px;mix-blend-mode:multiply;filter:none}
+.card:hover .card-media img{transform:scale(1.05);filter:saturate(1.04) brightness(1)}
+.card-body{
+  display:flex;align-items:baseline;gap:8px;padding:10px 2px 11px;
+}
+.card-no{font-family:var(--serif);font-size:9px;letter-spacing:.14em;color:var(--muted);flex:0 0 auto}
+.card.is-active .card-no{color:var(--gold)}
+.card-t{
+  font-family:var(--serif);font-size:12.5px;letter-spacing:.06em;color:var(--ink-soft);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.card:hover .card-t,.card.is-active .card-t{color:#f3ead9}
+
+/* ============ 页脚 ============ */
+footer{border-top:1px solid var(--line);padding:44px 0 56px;position:relative;z-index:1}
+.foot{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap;align-items:flex-start}
+.foot .fm{font-family:var(--serif);font-size:16px;letter-spacing:.24em;color:var(--gold-hi)}
+.foot .fs{font-size:10px;letter-spacing:.3em;color:var(--muted);margin-top:10px;text-transform:uppercase}
+.foot .fr{font-size:11px;line-height:2.1;color:var(--muted);letter-spacing:.08em;text-align:right;max-width:34em}
+
+/* 入场动画 */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ 展台工具栏 ============ */
+.stage-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  margin:-8px 0 16px;flex-wrap:wrap;
+}
+.bar-hint{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;letter-spacing:.2em;color:#9a8e7e;
+}
+.bar-hint svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.3;opacity:.8}
+.bar-tools{display:flex;align-items:center;gap:12px;margin-left:auto;flex-wrap:wrap}
+
+.pager{display:flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.16em;color:var(--muted)}
+.pager .now{color:var(--gold-hi);font-family:var(--serif);letter-spacing:.1em}
+.pager .sep{opacity:.45}
+.tool-btn{
+  width:30px;height:30px;display:grid;place-items:center;
+  border:1px solid rgba(199,164,105,.32);color:var(--gold-hi);
+  background:rgba(16,13,10,.5);transition:.25s var(--ease);
+}
+.tool-btn:hover{background:rgba(199,164,105,.18);border-color:var(--gold);color:#fff6e2}
+.tool-btn:active{transform:scale(.94)}
+.tool-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.5}
+
+.ai-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 15px;border:1px solid rgba(199,164,105,.42);border-radius:2px;
+  font-size:11px;letter-spacing:.16em;color:var(--gold-hi);
+  background:linear-gradient(180deg,rgba(44,34,23,.65),rgba(16,13,10,.65));
+  transition:.3s var(--ease);white-space:nowrap;
+}
+.ai-btn:hover{border-color:var(--gold);background:rgba(199,164,105,.16)}
+.ai-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.3}
+.ai-btn.is-on{
+  background:linear-gradient(180deg,#ecd39c,#c09a58);
+  border-color:#f0dcae;color:#1d1508;
+  box-shadow:0 8px 22px -10px rgba(236,211,156,.65);
+}
+.ai-btn.is-on svg{stroke:#1d1508}
+
+/* 点击放大提示 */
+.artwork{cursor:zoom-in}
+.zoom-tip{
+  position:absolute;right:14px;bottom:14px;z-index:4;
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 10px;font-size:9.5px;letter-spacing:.2em;
+  color:#f0e2c8;background:rgba(8,7,6,.62);border:1px solid rgba(199,164,105,.28);
+  opacity:0;transform:translateY(4px);transition:.35s var(--ease);pointer-events:none;
+}
+.artwork:hover .zoom-tip{opacity:1;transform:none}
+.zoom-tip svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.4}
+
+/* ============ 全屏查看 ============ */
+.lightbox{
+  position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;
+  padding:6vh 5vw;background:rgba(5,4,3,.95);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  opacity:0;visibility:hidden;cursor:zoom-out;
+  transition:opacity .4s var(--ease),visibility .4s;
+}
+.lightbox.is-open{opacity:1;visibility:visible}
+.lightbox img{
+  max-width:100%;max-height:76vh;object-fit:contain;
+  border:1px solid rgba(199,164,105,.26);
+  box-shadow:0 50px 140px -40px #000, 0 0 0 12px rgba(12,10,8,.65);
+  transform:scale(.95);transition:transform .5s var(--ease),filter .45s var(--ease);
+}
+.lightbox.is-open img{transform:scale(1)}
+.lb-cap{
+  position:absolute;left:0;right:0;bottom:3vh;text-align:center;
+  font-family:var(--serif);font-size:13px;letter-spacing:.2em;color:var(--ink-soft);
+}
+.lb-cap b{color:var(--gold-hi);font-weight:400;margin-right:14px;letter-spacing:.24em}
+.lb-cap i{font-style:normal;color:var(--muted);font-size:10px;letter-spacing:.22em;display:block;margin-top:6px}
+.lb-close{
+  position:absolute;top:3.4vh;right:4vw;width:38px;height:38px;
+  display:grid;place-items:center;border:1px solid rgba(199,164,105,.34);
+  color:var(--gold-hi);transition:.25s var(--ease);
+}
+.lb-close:hover{background:rgba(199,164,105,.18);border-color:var(--gold)}
+.lb-close svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.4}
+.lb-hint{
+  position:absolute;top:4vh;left:5vw;font-size:10px;letter-spacing:.24em;color:var(--muted);
+}
+body.lb-open{overflow:hidden}
+
+/* ============ AI 讲解员 ============ */
+.guide{
+  position:relative;margin-top:26px;
+  display:grid;grid-template-columns:54px 1fr;
+  border:1px solid rgba(199,164,105,.18);
+  background:
+    radial-gradient(120% 150% at 0% 0%,rgba(199,164,105,.11),transparent 56%),
+    linear-gradient(180deg,rgba(26,21,16,.88),rgba(13,11,8,.9));
+  overflow:hidden;
+}
+.guide::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--gold),rgba(199,164,105,.06));
+}
+.guide::after{
+  content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;
+  background:linear-gradient(90deg,transparent,rgba(232,208,160,.85),transparent);
+  opacity:0;transform:translateX(-100%);
+}
+.guide.is-speaking::after{opacity:1;animation:gscan 2.6s linear infinite}
+@keyframes gscan{to{transform:translateX(100%)}}
+
+.guide-aside{
+  display:flex;justify-content:center;padding-top:19px;
+  border-right:1px solid rgba(199,164,105,.12);
+}
+.guide-aside svg{width:20px;height:20px;fill:none;stroke:var(--gold);stroke-width:1.2;opacity:.85}
+
+.guide-body{padding:15px 20px 17px;min-width:0}
+.guide-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.guide-name{
+  display:flex;align-items:center;gap:10px;
+  font-size:11px;letter-spacing:.3em;color:var(--gold);
+}
+.guide-name em{
+  font-style:normal;font-size:9px;letter-spacing:.26em;color:var(--muted);
+  padding-left:10px;border-left:1px solid rgba(199,164,105,.22);
+}
+.guide-status{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:10.5px;letter-spacing:.14em;color:#8d8274;
+}
+.guide-status .pulse{
+  width:5px;height:5px;border-radius:50%;background:var(--muted);
+  transition:.3s var(--ease);
+}
+.guide.is-speaking .guide-status{color:var(--gold-hi)}
+.guide.is-speaking .guide-status .pulse{
+  background:var(--gold);box-shadow:0 0 0 4px rgba(199,164,105,.14);
+  animation:gpulse 1.4s ease-in-out infinite;
+}
+@keyframes gpulse{50%{opacity:.35;transform:scale(.7)}}
+
+.guide-btns{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
+.guide-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border:1px solid rgba(199,164,105,.30);border-radius:2px;
+  font-size:11px;letter-spacing:.12em;color:var(--gold-hi);
+  background:linear-gradient(180deg,rgba(40,31,22,.7),rgba(15,12,9,.7));
+  transition:.28s var(--ease);white-space:nowrap;
+}
+.guide-btn:hover{border-color:var(--gold);background:rgba(199,164,105,.14);color:#fff6e2}
+.guide-btn:active{transform:scale(.97)}
+.guide-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.4;flex:0 0 auto}
+.guide-btn.is-on{
+  background:linear-gradient(180deg,#ecd39c,#c09a58);
+  border-color:#f0dcae;color:#1d1508;
+  box-shadow:0 8px 22px -12px rgba(236,211,156,.75);
+}
+.guide-btn.is-on svg{stroke:#1d1508}
+
+/* 朗读中的声波 */
+.gb-wave{display:none;align-items:flex-end;gap:2px;height:12px;width:13px}
+.guide-btn.is-on .gb-wave{display:inline-flex}
+.guide-btn.is-on .gb-icon{display:none}
+.gb-wave i{
+  display:block;width:2px;height:100%;background:currentColor;
+  transform-origin:bottom;animation:gwave 1s ease-in-out infinite;
+}
+.gb-wave i:nth-child(2){animation-delay:.14s}
+.gb-wave i:nth-child(3){animation-delay:.28s}
+.gb-wave i:nth-child(4){animation-delay:.42s}
+@keyframes gwave{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+
+.guide-script{
+  margin-top:12px;padding-top:12px;border-top:1px solid rgba(199,164,105,.12);
+  font-family:var(--serif);font-size:14.5px;line-height:2;letter-spacing:.02em;
+  color:#c9bfae;min-height:3.6em;
+  transition:opacity .3s var(--ease);
+}
+.guide-script .gs-tag{
+  display:inline-block;margin-right:10px;padding:1px 7px;
+  font-family:var(--sans);font-size:9px;letter-spacing:.2em;color:var(--gold);
+  border:1px solid rgba(199,164,105,.3);vertical-align:2px;
+}
+.guide.is-swapping .guide-script{opacity:.25}
+.guide-note{font-size:10.5px;color:#8d8274;letter-spacing:.1em;margin-top:8px}
+.guide-btn[disabled]{opacity:.4;cursor:not-allowed}
+
+/* 响应式 */
+@media (max-width:1100px){
+  .nav-btn.prev{left:-16px}
+  .nav-btn.next{right:-16px}
+}
+@media (max-width:980px){
+  .grid.is-small{grid-template-columns:repeat(3,1fr)}
+  .masthead{grid-template-columns:1fr;gap:34px;padding:34px 0 38px}
+  .badge{justify-self:start;min-width:0}
+  .intro-grid{grid-template-columns:1fr;gap:40px}
+  .facts dd{text-align:left}
+  .case{padding:40px 30px 34px}
+  .plinth{margin:0 -6px}
+}
+@media (max-width:680px){
+  .wrap{padding:0 20px}
+  .guide{grid-template-columns:1fr}
+  .guide-aside{display:none}
+  .guide-body{padding:14px 16px 16px}
+  .guide-name em{display:none}
+  .guide-btns{width:100%;margin-left:0}
+  .guide-btn{flex:1 1 auto;justify-content:center}
+  .guide-script{font-size:14px;line-height:1.95}
+  .topbar{font-size:9.5px;letter-spacing:.18em}
+  .topbar .tb-right span:first-child{display:none}
+  .topbar .tb-right .dot{display:none}
+  .plate{grid-template-columns:1fr;gap:14px}
+  .plate-meta{text-align:left;padding-top:0}
+  .plate-no{padding-top:0}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:12px 10px}
+  .grid.is-small{grid-template-columns:repeat(2,1fr);gap:12px 10px}
+  .stage{padding-top:28px}
+  .case{padding:30px 16px 26px}
+  .artwork{padding:9px}
+  .stage-inner{height:clamp(180px,32vh,290px)}
+  .mat{height:clamp(180px,32vh,290px)}
+  .plinth{height:46px;margin:0 -2px}
+  .brass{top:12px;font-size:7.5px;min-width:88px;padding:3px 10px}
+  .lamp{transform:translateX(-50%) scale(.78);top:-30px}
+  .nav-btn{width:36px;height:36px;top:calc(50% + 8px)}
+  .nav-btn.prev{left:4px}
+  .nav-btn.next{right:4px}
+  .foot .fr{text-align:left}
+  .prose p{text-align:left}
+  .prose p:first-of-type::first-letter{
+    float:none;font-size:1em;padding:0;color:inherit;line-height:inherit;
+  }
+}
+@media (max-width:560px){
+  .sec-en{display:none}
+  .deck{letter-spacing:.02em}
+  .bar-hint{display:none}
+  .bar-tools{width:100%;justify-content:space-between;margin-left:0}
+  .tool-btn{width:34px;height:34px}
+  .stage-bar{margin-top:2px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- 顶部栏 -->
+  <div class="topbar">
+    <div class="tb-left">
+      <span class="mark">HALONG</span>
+      <i class="dot"></i>
+      <span>越南 · 广宁 · 北部湾</span>
+    </div>
+    <div class="tb-right">
+      <span>常设展 · 第一展厅</span>
+      <i class="dot"></i>
+      <span>2026</span>
+    </div>
+  </div>
+  <div class="rule"></div>
+
+  <!-- 刊头 -->
+  <header class="masthead">
+    <div>
+      <div class="eyebrow"><i></i>越南 · 广宁省 · 北部湾西岸</div>
+      <h1>下龙湾<span class="thin">数字博物馆</span></h1>
+      <p class="deck">五亿年的石灰岩，被海水切成近两千座岛。晨雾散开时，它们像一支停在湾心的船队——<em>崖壁、海蚀凹槽、暗洞与棕帆</em>，共同构成这片被称作「海上桂林」的水域。</p>
+    </div>
+    <div class="badge" aria-label="世界自然遗产">
+      <svg class="seal" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="27" fill="none" stroke="#c7a469" stroke-width="1"/>
+        <circle cx="32" cy="32" r="20.5" fill="none" stroke="#c7a469" stroke-width=".7" opacity=".7"/>
+        <circle cx="32" cy="32" r="4.2" fill="#c7a469"/>
+        <g stroke="#c7a469" stroke-width="1.1" opacity=".85">
+          <line x1="32" y1="8" x2="32" y2="13"/><line x1="32" y1="51" x2="32" y2="56"/>
+          <line x1="8" y1="32" x2="13" y2="32"/><line x1="51" y1="32" x2="56" y2="32"/>
+          <line x1="15" y1="15" x2="18.6" y2="18.6"/><line x1="45.4" y1="45.4" x2="49" y2="49"/>
+          <line x1="49" y1="15" x2="45.4" y2="18.6"/><line x1="18.6" y1="45.4" x2="15" y2="49"/>
+        </g>
+      </svg>
+      <div>
+        <div class="bt">UNESCO</div>
+        <div class="bm">世界自然遗产</div>
+        <div class="bs">World Natural Heritage · 1994</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主图区 -->
+  <section class="stage-sec" id="stageSec">
+    <div class="sec-head">
+      <span class="sec-no">I</span>
+      <h2>景观陈列</h2>
+      <span class="sec-line"></span>
+      <span class="sec-en">The Landscape</span>
+    </div>
+
+    <div class="stage-bar">
+      <span class="bar-hint">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6"/></svg>
+        点击主图可全屏查看
+      </span>
+      <div class="bar-tools">
+        <div class="pager">
+          <button class="tool-btn" id="prevBtn2" aria-label="上一件" title="上一件（←）">
+            <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <span class="now" id="pagerNow">01</span>
+          <span class="sep">/</span>
+          <span id="pagerAll">35</span>
+          <button class="tool-btn" id="nextBtn2" aria-label="下一件" title="下一件（→）">
+            <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <button class="ai-btn" id="aiBtn" aria-pressed="false" title="增强饱和度，模拟色彩修复">
+          <svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/></svg>
+          <span id="aiLabel">AI 色彩还原</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="vitrine">
+        <div class="lamp" aria-hidden="true">
+          <span class="lamp-rod"></span>
+          <span class="lamp-shade"></span>
+          <span class="lamp-glow"></span>
+        </div>
+
+        <div class="case">
+          <div class="beam beam-soft" aria-hidden="true"></div>
+          <div class="beam beam-core" aria-hidden="true"></div>
+
+          <div class="stage-inner">
+            <div class="artwork" id="artwork">
+              <div class="mat" id="mat">
+                <div class="mat-bd" id="matBd" aria-hidden="true"></div>
+                <img id="stageImg" src="images/anh-vinh-ha-long-2.jpg" alt="破晓群岛">
+              </div>
+              <span class="zoom-tip">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6"/></svg>
+                放大
+              </span>
+            </div>
+          </div>
+
+          <div class="stage-index" id="stageIndex">01 / 35</div>
+          <div class="glass" aria-hidden="true"></div>
+        </div>
+
+        <div class="plinth">
+          <span class="brass" id="caseLabel">NO. 01</span>
+        </div>
+      </div>
+
+      <button class="nav-btn prev" id="prevBtn" aria-label="上一件">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="nav-btn next" id="nextBtn" aria-label="下一件">
+        <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <div class="plate" id="plate">
+      <div class="plate-no" id="plateNo">NO. 01</div>
+      <div class="plate-main">
+        <h3 id="workTitle">临江祭祀图</h3>
+        <p class="en" id="workEn">The Riverside Ritual</p>
+        <p class="desc" id="workDesc"></p>
+      </div>
+      <div class="plate-meta" id="workMeta"><b>类别</b></div>
+    </div>
+
+    <!-- AI 讲解员 -->
+    <div class="guide" id="guide">
+      <div class="guide-aside" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M11 5L6.5 9H3v6h3.5L11 19V5z"/>
+          <path d="M15.5 8.5a5 5 0 0 1 0 7"/>
+          <path d="M18.5 6a8.5 8.5 0 0 1 0 12"/>
+        </svg>
+      </div>
+      <div class="guide-body">
+        <div class="guide-top">
+          <div class="guide-name">AI 讲解员<em>AI GUIDE</em></div>
+          <span class="guide-status" id="guideStatus"><i class="pulse"></i><span id="guideStatusText">选择语言，听这件展品的讲解</span></span>
+          <div class="guide-btns">
+            <button class="guide-btn" id="ttsZh" aria-pressed="false" title="用普通话朗读当前展品讲解词">
+              <svg class="gb-icon" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5-10-6.5z"/></svg>
+              <span class="gb-wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+              语音导览（中文）
+            </button>
+            <button class="guide-btn" id="ttsEn" aria-pressed="false" title="Read the English guide for this work aloud">
+              <svg class="gb-icon" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5-10-6.5z"/></svg>
+              <span class="gb-wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+              Voice Guide (English)
+            </button>
+          </div>
+        </div>
+        <p class="guide-script" id="guideScript"><span class="gs-tag" id="guideLang">中文</span><span id="guideText"></span></p>
+        <p class="guide-note" id="guideNote" hidden>当前浏览器不支持语音合成，可阅读下方讲解文字。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 简介 -->
+  <section class="intro">
+    <div class="sec-head">
+      <span class="sec-no">II</span>
+      <h2>遗产简介</h2>
+      <span class="sec-line"></span>
+      <span class="sec-en">About the Bay</span>
+    </div>
+    <div class="intro-grid">
+      <div class="prose reveal">
+        <p>下龙湾在越南东北部广宁省，北部湾西岸，距河内约一百六十公里。海域面积约一千五百五十三平方公里，散布着一千九百六十九座岛屿与礁石，其中九百八十座有名字。一九九四年，它因极高的美学价值列入《世界遗产名录》；二〇〇〇年，又因地质与地貌价值再获认定；二〇二三年，遗产范围扩展至海防市的吉婆群岛。</p>
+        <p>这里的岛不是山，是海侵喀斯特。约五亿年的沉积、抬升与断裂，把石灰岩压出厚厚的层理；海面上升之后，浪与潮沿着裂隙向内溶蚀，把岩体切成塔状与锥状，崖脚留下一道道海蚀凹槽。岛体海拔多在五十至二百米之间，从水上看几乎等高，只有逆光时才显出层次。</p>
+        <p>「下龙」意为「下降的龙」。传说龙吐出的珠玉落进海里，成了这些岛屿。今天湾内仍有渔村与养殖筏，旅游则成为第一产业——保护与游览，始终在同一条水道上协商。</p>
+      </div>
+      <aside class="facts reveal">
+        <dl>
+          <dt>地质年代</dt><dd>约 5 亿年</dd>
+          <dt>位置</dt><dd>越南 · 广宁省</dd>
+          <dt>海域面积</dt><dd>约 1,553 km²</dd>
+          <dt>岛屿</dt><dd>1,969 座（980 座有名）</dd>
+          <dt>遗产</dt><dd>1994 年列入名录</dd>
+          <dt>扩展</dt><dd>2023 年纳入吉婆群岛</dd>
+        </dl>
+        <p class="note">本馆影像取自现场摄影与公开资料，按航拍、全景、地貌细部与人文纪实四类陈列；核心遗产区 434 平方公里，含 775 座岛屿。</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 藏品陈列 -->
+  <section class="collection">
+    <div class="coll-top">
+      <div class="sec-head" style="margin-bottom:0">
+        <span class="sec-no">III</span>
+        <h2>影像档案</h2>
+        <span class="sec-line"></span>
+        <span class="sec-en">The Archive</span>
+      </div>
+      <div class="coll-hint">
+        <span id="collCount">共 7 件</span>
+        <span>点击缩略图切换主图</span>
+        <span class="kbd">←</span><span class="kbd">→</span>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <div class="fm">下龙湾数字博物馆</div>
+        <div class="fs">Ha Long Bay · Digital Museum</div>
+      </div>
+      <div class="fr">
+        图像素材来自现场摄影与公开资料，仅用于研究与展示。<br>
+        世界自然遗产 · 越南广宁下龙湾—吉婆群岛 / 1994
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- 全屏查看 -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="放大查看作品" aria-hidden="true">
+  <span class="lb-hint">点击任意处，或按 ESC 关闭</span>
+  <button class="lb-close" id="lbClose" aria-label="关闭">
+    <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <img id="lbImg" alt="">
+  <div class="lb-cap">
+    <b id="lbNo">NO. 01</b><span id="lbTitle">临江祭祀图</span>
+    <i id="lbMeta">航拍 · 晨光</i>
+  </div>
+</div>
+
+<script>
+/* ================= 藏品数据 ================= */
+const WORKS = [
+  {f:"anh-vinh-ha-long-2.jpg", t:"破晓群岛", en:"Archipelago at Dawn", k:"photo", m:"航拍 · 晨光",
+   d:"晨光从岛群背后升起，游船在翡翠色水面上拖出细长的尾迹，岛影一层层退向地平线。"},
+  {f:"vinh-ha-long.jpg", t:"帆影湾心", en:"Junks in the Bay", k:"photo", m:"海湾全景",
+   d:"棕帆木船散布在石灰岩岛之间，这是下龙湾流传最广的一幅画面。"},
+  {f:"Vịnh-Hạ-Long-4.jpg", t:"日落剪影", en:"Sunset Silhouette", k:"photo", m:"逆光 · 剪影",
+   d:"落日把岛群压成黑色剪影，水面只留下一道橙金色的反光。"},
+  {f:"hon-trong-mai-ha-long.jpg", t:"斗鸡石", en:"Fighting Cocks", k:"photo", m:"海蚀残柱",
+   d:"两块相对的岩柱被看作一对斗鸡，是湾内最著名的天然标志。"},
+  {f:"HL.jpg", t:"岛间水道", en:"Island Channel", k:"photo", m:"喀斯特地貌",
+   d:"岛体为海水溶蚀的石灰岩，崖脚可见清晰的海蚀凹槽与崩落。"},
+  {f:"halong-cruise.jpg", t:"静水行舟", en:"A Boat in Still Water", k:"photo", m:"旅游纪实",
+   d:"一艘游船驶过绿岛与静水；旅游业是今日湾区的第一产业。"},
+  {f:"halong-poster.jpg", t:"宣传图形", en:"Publicity Graphic", k:"photo", m:"旅游海报",
+   d:"题为「Vịnh Hạ Long」的海报，副题意为「广宁的旅游天堂」。"}
+];
+
+
+/* ================= AI 讲解词（中 / 英） ================= */
+const NARR = {
+  "anh-vinh-ha-long-2.jpg": {
+    zh:"从空中看，下龙湾是一千九百六十九座石灰岩岛屿同时从海面升起的画面。海域约一千五百五十三平方公里，一九九四年列入世界自然遗产，二〇〇〇年因地质地貌价值再获认定，二〇二三年又把海防市的吉婆群岛并了进来。",
+    en:"From the air, Ha Long Bay is nineteen hundred and sixty-nine limestone islands rising at once out of the sea. The bay covers about 1,553 square kilometres. It was inscribed as a World Natural Heritage site in 1994, recognised again in 2000 for its geology, and extended in 2023 to include the Cat Ba Archipelago."
+  },
+  "vinh-ha-long.jpg": {
+    zh:"棕帆木船是下龙湾最经典的形象。这些船原本用来捕鱼与运货，如今大多改为载客过夜；船身漆成木色，帆只在顺风时才升起。岛与岛之间的水道深浅不一，行船要看潮水的时刻。",
+    en:"The brown-sailed junk is the classic image of Ha Long Bay. These boats once carried fish and cargo; today most of them take visitors out overnight. Their hulls are varnished wood, and the sails go up only when the wind agrees. Channels between the islands vary in depth, so boats move with the tide."
+  },
+  "Vịnh-Hạ-Long-4.jpg": {
+    zh:"日落时，岛群退成黑色剪影，只剩水面上一道橙金色的反光。湾内的岛屿多是陡立的石灰岩塔，海拔五十到二百米；从水面平视几乎看不出高低，只有逆光时才显出它们真正的轮廓。",
+    en:"At sunset the islands flatten into black silhouettes, and only a band of orange light survives on the water. The islets are steep limestone towers, fifty to two hundred metres high. Seen from sea level they look almost equal; only backlight reveals their true outline."
+  },
+  "hon-trong-mai-ha-long.jpg": {
+    zh:"两块相对的岩柱，被看作一对斗鸡，越南语称 Hòn Trống Mái。它们原本是同一块石灰岩：海水沿裂隙溶蚀，中间被掏空，崩塌之后只剩两根石柱立在水里。这是海侵喀斯特最直观的一件标本。",
+    en:"Two rocks face each other like a pair of fighting cocks — Hòn Trống Mái. They were once a single mass of limestone. The sea worked into its joints, hollowed the middle out, and when the centre collapsed two pillars were left standing in the water. It is the bay's clearest single specimen of drowned karst."
+  },
+  "HL.jpg": {
+    zh:"岛体是海水侵入之后雕出来的石灰岩：崖脚有一道海蚀凹槽，凹槽之上是垂直的崖壁，崖顶覆着热带灌木。这样的塔状喀斯特，要先有约五亿年的沉积与抬升，再等海面升上来，才可能成形。",
+    en:"These islands are limestone carved by a rising sea: a notch cut at the waterline, a vertical face above it, tropical scrub on top. Such tower karst needs some five hundred million years of deposition and uplift first — and then a sea that rises into it."
+  },
+  "halong-cruise.jpg": {
+    zh:"一艘游船驶过静水。旅游业现在是湾区的第一产业，二〇〇〇年以来累计接待游客超过五千万人次；代价是水质、噪声与养殖污染。遗产保护与游览开放，至今仍在同一条水道上协商。",
+    en:"A single boat crosses still water. Tourism is now the bay's main industry, with more than fifty million visits since 2000, and the price is water quality, noise and waste from aquaculture. Conservation and visitation are still negotiated in the same channel."
+  },
+  "halong-poster.jpg": {
+    zh:"这是以「Vịnh Hạ Long」为题的一幅宣传图形，副题意为「广宁的旅游天堂」。它不属于自然本身，而是遗产被观看、被销售之后的样子——本馆把它作为一份关于传播的档案收进来。",
+    en:"A publicity graphic titled Vịnh Hạ Long, subtitled the travel paradise of Quảng Ninh. It is not nature itself but the image of a heritage site once it is looked at and sold. The museum keeps it as an archive of how the bay travels."
+  }
+};
+
+
+/* ================= 元素 ================= */
+const grid       = document.getElementById('grid');
+const stage      = document.getElementById('stage');
+const stageImg   = document.getElementById('stageImg');
+const mat        = document.getElementById('mat');
+const matBd      = document.getElementById('matBd');
+const titleEl    = document.getElementById('workTitle');
+const enEl       = document.getElementById('workEn');
+const descEl     = document.getElementById('workDesc');
+const metaEl     = document.getElementById('workMeta');
+const noEl       = document.getElementById('plateNo');
+const idxEl      = document.getElementById('stageIndex');
+const plate      = document.getElementById('plate');
+const stageSec   = document.getElementById('stageSec');
+const caseLabel  = document.getElementById('caseLabel');
+const artwork    = document.getElementById('artwork');
+const stageInner = document.querySelector('.stage-inner');
+const aiBtn      = document.getElementById('aiBtn');
+const aiLabel    = document.getElementById('aiLabel');
+const pagerNow   = document.getElementById('pagerNow');
+const lightbox   = document.getElementById('lightbox');
+const lbImg      = document.getElementById('lbImg');
+const lbNo       = document.getElementById('lbNo');
+const lbTitle    = document.getElementById('lbTitle');
+const lbMeta     = document.getElementById('lbMeta');
+const lbClose    = document.getElementById('lbClose');
+const guideEl    = document.getElementById('guide');
+const guideText  = document.getElementById('guideText');
+const guideLang  = document.getElementById('guideLang');
+const guideScript= document.getElementById('guideScript');
+const guideNote  = document.getElementById('guideNote');
+const guideStat  = document.getElementById('guideStatusText');
+const ttsZh      = document.getElementById('ttsZh');
+const ttsEn      = document.getElementById('ttsEn');
+const cards      = [];
+
+const pad = n => String(n).padStart(2,'0');
+let current = 0;
+let seq = 0;
+let restored = false;
+
+/* 缩略图 */
+WORKS.forEach((w,i) => {
+  const b = document.createElement('button');
+  b.className = 'card';
+  b.type = 'button';
+  b.dataset.i = i;
+  b.setAttribute('aria-label', `第 ${i+1} 件：${w.t}`);
+  b.innerHTML =
+    '<span class="card-media ' + (w.k === 'symbol' ? 'card-media--light' : '') + '">' +
+      '<img src="images/' + w.f + '" alt="' + w.t + '"' + (WORKS.length > 12 ? ' loading="lazy"' : '') + '>' +
+    '</span>' +
+    '<span class="card-body">' +
+      '<span class="card-no">' + pad(i+1) + '</span>' +
+      '<span class="card-t">' + w.t + '</span>' +
+    '</span>';
+  b.addEventListener('click', () => select(i, true));
+  grid.appendChild(b);
+  cards.push(b);
+});
+
+/* 画框按作品比例伸缩，像真正装裱过的挂画 */
+function fitArtwork(){
+  if (!stageInner) return;
+  const box  = stageInner.getBoundingClientRect();
+  const cs   = getComputedStyle(artwork);
+  const padX = parseFloat(cs.paddingLeft) || 15;
+  const padY = parseFloat(cs.paddingTop)  || 15;
+  const W = box.width  - padX * 2;
+  const H = box.height - padY * 2;
+  const nw = stageImg.naturalWidth, nh = stageImg.naturalHeight;
+  if (!nw || !nh || W <= 40 || H <= 40) return;
+
+  const ar = nw / nh;
+  let w = H * ar, h = H;
+  if (w > W){ w = W; h = W / ar; }
+
+  mat.style.width  = Math.round(w) + 'px';
+  mat.style.height = Math.round(h) + 'px';
+}
+
+/* 只更新内容，不做过渡 */
+function paint(i){
+  const w = WORKS[i];
+  const light = w.k === 'symbol';
+
+  stageImg.src = 'images/' + w.f;
+  stageImg.alt = w.t;
+  matBd.style.backgroundImage = 'url("images/' + w.f + '")';
+  mat.classList.toggle('mat--light', light);
+  stage.classList.toggle('light', light);
+
+  if (stageImg.complete) fitArtwork();
+  else stageImg.addEventListener('load', fitArtwork, {once:true});
+
+  titleEl.textContent = w.t;
+  enEl.textContent    = w.en;
+  descEl.textContent  = w.d;
+  noEl.textContent    = 'NO. ' + pad(i + 1);
+  idxEl.textContent   = pad(i + 1) + ' / ' + pad(WORKS.length);
+  caseLabel.textContent = 'NO. ' + pad(i + 1);
+  pagerNow.textContent  = pad(i + 1);
+  metaEl.innerHTML    = '<b>类别</b>' + w.m;
+
+  renderGuide();
+
+  if (lightbox.classList.contains('is-open')) syncLightbox(i);
+
+  cards.forEach((c, k) => {
+    const on = k === i;
+    c.classList.toggle('is-active', on);
+    if (on) c.setAttribute('aria-current','true');
+    else c.removeAttribute('aria-current');
+  });
+}
+
+/* 带过渡的切换：先预载，再替换，避免空白闪动 */
+function select(i, fromCard){
+  const n = WORKS.length;
+  const next = ((i % n) + n) % n;
+  const t0 = performance.now();
+  const mySeq = ++seq;
+
+  if (speakLang) stopSpeak();     // 换展品即停读，讲解词同步换成新的一件
+  plate.classList.add('is-swapping');
+  guideEl.classList.add('is-swapping');
+  stageImg.classList.add('is-fading');
+
+  const commit = () => {
+    if (mySeq !== seq) return;
+    current = next;
+    paint(current);
+    const wait = Math.max(0, 130 - (performance.now() - t0));
+    setTimeout(() => {
+      stageImg.classList.remove('is-fading');
+      plate.classList.remove('is-swapping');
+      guideEl.classList.remove('is-swapping');
+    }, wait);
+
+    [1,-1].forEach(d => {
+      const pre = new Image();
+      pre.src = 'images/' + WORKS[(current + d + n) % n].f;
+    });
+
+    if (fromCard){
+      const r = stageSec.getBoundingClientRect();
+      if (r.top > window.innerHeight * .55 || r.bottom < 120){
+        stageSec.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    }
+  };
+
+  const pre = new Image();
+  pre.onload = commit;
+  pre.onerror = commit;
+  pre.src = 'images/' + WORKS[next].f;
+}
+
+/* ============ 全屏查看 ============ */
+function syncLightbox(i){
+  const w = WORKS[i];
+  lbImg.src = 'images/' + w.f;
+  lbImg.alt = w.t;
+  lbNo.textContent    = 'NO. ' + pad(i + 1);
+  lbTitle.textContent = w.t;
+  lbMeta.textContent  = w.m;
+  lbImg.classList.toggle('is-restored', restored);
+}
+
+function openLightbox(){
+  syncLightbox(current);
+  lightbox.classList.add('is-open');
+  lightbox.setAttribute('aria-hidden','false');
+  document.body.classList.add('lb-open');
+  try { lbClose.focus({preventScroll:true}); } catch(e){}
+}
+
+function closeLightbox(){
+  lightbox.classList.remove('is-open');
+  lightbox.setAttribute('aria-hidden','true');
+  document.body.classList.remove('lb-open');
+}
+
+/* ============ AI 色彩还原 ============ */
+function setRestore(on){
+  restored = on;
+  stageImg.classList.toggle('is-restored', on);
+  lbImg.classList.toggle('is-restored', on);
+  aiBtn.classList.toggle('is-on', on);
+  aiBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  aiLabel.textContent = on ? '色彩已还原' : 'AI 色彩还原';
+}
+
+/* ============ AI 讲解员 · 语音合成 ============ */
+const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+const IDLE_ZH = '选择语言，听这件展品的讲解';
+const IDLE_EN = 'Tap a language to listen';
+
+let guideLocale = 'zh';   // 当前展示 / 朗读的语种
+let speakLang   = null;   // 'zh' | 'en' | null —— 正在朗读的语种
+let speakSeq    = 0;
+let voiceZh = null, voiceEn = null;
+
+function narrOf(w){
+  return NARR[w.f] || {zh:w.d, en:w.d};
+}
+
+/* 挑一个可用的中文 / 英文嗓音 */
+function pickVoice(){
+  if (!synth) return;
+  const vs = synth.getVoices() || [];
+  if (!vs.length) return;
+  const match = (nameRe, langRe) =>
+    vs.find(v => langRe.test(v.lang) && nameRe.test(v.name)) ||
+    vs.find(v => langRe.test(v.lang)) || null;
+  voiceZh = match(/Tingting|Ting-Ting|Xiaoxiao|Xiaoyi|Huihui|Yaoyao|Meijia|Sinji|Lian|Chinese|中文|普通话/i, /^zh/i);
+  voiceEn = match(/Samantha|Aria|Jenny|Serena|Google US English|Google UK English Female|Natural|English/i, /^en/i);
+}
+if (synth){
+  pickVoice();
+  if (typeof synth.addEventListener === 'function') synth.addEventListener('voiceschanged', pickVoice);
+  else synth.onvoiceschanged = pickVoice;
+}
+
+/* 讲解词随展品 / 语种更新 */
+function renderGuide(){
+  const n = narrOf(WORKS[current]);
+  guideText.textContent = guideLocale === 'zh' ? n.zh : n.en;
+  guideScript.setAttribute('lang', guideLocale === 'zh' ? 'zh-CN' : 'en');
+  guideLang.textContent = guideLocale === 'zh' ? '中文' : 'EN';
+  if (!speakLang) guideStat.textContent = guideLocale === 'zh' ? IDLE_ZH : IDLE_EN;
+}
+
+function setSpeakingUI(){
+  const on = !!speakLang;
+  guideEl.classList.toggle('is-speaking', on);
+  ttsZh.classList.toggle('is-on', speakLang === 'zh');
+  ttsEn.classList.toggle('is-on', speakLang === 'en');
+  ttsZh.setAttribute('aria-pressed', speakLang === 'zh' ? 'true' : 'false');
+  ttsEn.setAttribute('aria-pressed', speakLang === 'en' ? 'true' : 'false');
+  if (on){
+    guideStat.textContent = speakLang === 'zh' ? '正在朗读 · 再次点击可停止' : 'Reading · tap again to stop';
+  } else {
+    guideStat.textContent = guideLocale === 'zh' ? IDLE_ZH : IDLE_EN;
+  }
+}
+
+function stopSpeak(){
+  speakSeq++;                       // 让在途的逐字回调失效
+  if (synth){ try { synth.cancel(); } catch(e){} }
+  speakLang = null;
+  setSpeakingUI();
+}
+
+function speak(lang){
+  if (!synth) return;
+  if (speakLang === lang){ stopSpeak(); return; }   // 再次点击同一按钮 → 停止
+
+  const wasActive = !!speakLang || synth.speaking || synth.pending;
+  guideLocale = lang;
+  renderGuide();
+
+  const token = ++speakSeq;
+  try { synth.cancel(); } catch(e){}
+  speakLang = null;
+  setSpeakingUI();
+
+  const w = WORKS[current];
+  const n = narrOf(w);
+  const text = lang === 'zh' ? n.zh : n.en;
+  if (!text) return;
+
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang  = lang === 'zh' ? 'zh-CN' : 'en-US';
+  u.rate  = lang === 'zh' ? 0.92 : 0.95;
+  u.pitch = 1;
+  u.volume = 1;
+  const v = lang === 'zh' ? voiceZh : voiceEn;
+  if (v){ try { u.voice = v; } catch(e){} }   // 嗓音失效时退回系统默认，不中断朗读
+
+  u.onend = () => {
+    if (token !== speakSeq) return;
+    speakLang = null; setSpeakingUI();
+  };
+  u.onerror = e => {
+    if (token !== speakSeq) return;
+    if (e && /interrupted|canceled|aborted/i.test(e.error || '')) return;
+    speakLang = null; setSpeakingUI();
+  };
+
+  const start = () => {
+    if (token !== speakSeq) return;
+    speakLang = lang;
+    setSpeakingUI();
+    try { synth.speak(u); }
+    catch(err){ speakLang = null; setSpeakingUI(); }
+  };
+
+  /* Chrome 在 cancel 之后立刻 speak 偶尔会丢句子；
+     首次点击则同步调用，避免 iOS 因非手势触发而拒读 */
+  if (wasActive) setTimeout(start, 90);
+  else start();
+}
+
+if (!synth){
+  ttsZh.disabled = true;
+  ttsEn.disabled = true;
+  guideNote.hidden = false;
+  guideStat.textContent = '当前浏览器不支持语音合成';
+} else {
+  ttsZh.addEventListener('click', () => speak('zh'));
+  ttsEn.addEventListener('click', () => speak('en'));
+  renderGuide();
+  window.addEventListener('pagehide', () => { try { synth.cancel(); } catch(e){} });
+}
+
+/* 控制 */
+document.getElementById('prevBtn').addEventListener('click', () => select(current - 1));
+document.getElementById('nextBtn').addEventListener('click', () => select(current + 1));
+document.getElementById('prevBtn2').addEventListener('click', () => select(current - 1));
+document.getElementById('nextBtn2').addEventListener('click', () => select(current + 1));
+aiBtn.addEventListener('click', () => setRestore(!restored));
+
+/* 打开 / 关闭放大视图：点击任意位置关闭 */
+artwork.addEventListener('click', openLightbox);
+lightbox.addEventListener('click', closeLightbox);
+lbClose.addEventListener('click', e => { e.stopPropagation(); closeLightbox(); });
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && lightbox.classList.contains('is-open')){
+    e.preventDefault(); closeLightbox(); return;
+  }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); select(current - 1); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); select(current + 1); }
+});
+
+/* 初始化：直接落图，无闪动 */
+paint(0);
+stageImg.addEventListener('load', () => stageImg.classList.remove('is-fading'));
+
+/* 支持 #20 这样的深链：直接落图，不做过渡 */
+const fromHash = parseInt((location.hash || '').replace('#',''), 10);
+if (fromHash >= 1 && fromHash <= WORKS.length){
+  current = fromHash - 1;
+  paint(current);
+}
+
+/* 滚动入场 */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => { if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+}, {threshold:.12});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* 兜底：已在视口内却未触发的，直接显示 */
+function revealInView(){
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top < innerHeight * .92 && r.bottom > 0) el.classList.add('in');
+  });
+}
+addEventListener('load', revealInView);
+
+/* 数量 */
+document.getElementById('collCount').textContent = '共 ' + WORKS.length + ' 件';
+if (WORKS.length <= 8) grid.classList.add('is-small');
+document.getElementById('pagerAll').textContent  = pad(WORKS.length);
+
+/* 窗口变化时重新装框 */
+let rzTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(rzTimer);
+  rzTimer = setTimeout(fitArtwork, 120);
+});
+</script>
+</body>
+</html>
